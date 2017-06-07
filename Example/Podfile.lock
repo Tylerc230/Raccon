@@ -1,0 +1,22 @@
+PODS:
+  - Nimble (5.1.1)
+  - Quick (1.0.0)
+  - Raccoon (0.1.0)
+
+DEPENDENCIES:
+  - Nimble (~> 5.1.1)
+  - Quick (~> 1.0.0)
+  - Raccoon (from `../`)
+
+EXTERNAL SOURCES:
+  Raccoon:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
+  Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
+  Raccoon: 66a4a03f29c295334282504f17ac51885ee34631
+
+PODFILE CHECKSUM: a7c1e944361314c08777524993787d6404e2dc4a
+
+COCOAPODS: 1.2.1
