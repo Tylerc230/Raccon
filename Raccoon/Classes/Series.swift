@@ -8,7 +8,7 @@
 public struct Series<T, I: DataFrameIndex> {
     fileprivate typealias IndexMap = [I: Int]
     fileprivate typealias ReverseIndexMap = [Int: I]
-    fileprivate let data: [T]
+    fileprivate var data: [T]
     fileprivate let indexMap: IndexMap
     fileprivate let reverseIndexMap: ReverseIndexMap
     
@@ -39,6 +39,13 @@ public struct Series<T, I: DataFrameIndex> {
                 return result
         }
     }
+    
+    fileprivate func offset(forIndex index: I) -> Int {
+        guard let offset = indexMap[index] else {
+            fatalError("Subscript does not exist")
+        }
+        return offset
+    }
 }
 
 extension Series where I == Int {
@@ -49,9 +56,10 @@ extension Series where I == Int {
 }
 
 
-extension Series: Collection {
+extension Series: MutableCollection {
     public typealias Index = I
     public typealias Iterator = AnyIterator<T>
+    public typealias SubSequence = ArraySlice<T>
     public func makeIterator() -> Iterator {
         var iterator = data.makeIterator()
         return AnyIterator {
@@ -73,13 +81,30 @@ extension Series: Collection {
         return index
     }
     
-    public subscript (position: I) -> Iterator.Element {
-        guard let offset = indexMap[position] else {
-            fatalError("Subscript does not exist")
+    public subscript (index: I) -> Iterator.Element {
+        get {
+            let o = offset(forIndex: index)
+            return data[o]
         }
-        return data[offset]
+        set (newElement){
+            let o = offset(forIndex: index)
+            data[o] = newElement
+        }
     }
     
+    public subscript(bounds: Range<I>) -> ArraySlice<T> {
+        get {
+            let lower = offset(forIndex: bounds.lowerBound)
+            let upper = offset(forIndex: bounds.upperBound)
+            return data[lower..<upper]
+        }
+        set(newValue) {
+            let lower = offset(forIndex: bounds.lowerBound)
+            let upper = offset(forIndex: bounds.upperBound)
+            data[lower..<upper] = newValue
+        }
+    }
+
     public func index(after i: I) -> I {
         guard let offset = indexMap[i] else {
             fatalError("Index not found")

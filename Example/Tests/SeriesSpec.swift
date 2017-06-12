@@ -37,6 +37,12 @@ class SeriesSpec: QuickSpec {
                 expect(series["first"]) == 1
                 expect(series["third"]) == 3
             }
+            
+            it("can be modified via subscripting") {
+                var series = Series([2, 4, 5])
+                series[2] = 6
+                expect(series[2]) == 6
+            }
         }
     }
     
