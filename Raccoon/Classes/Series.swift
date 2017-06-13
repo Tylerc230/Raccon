@@ -6,7 +6,6 @@
 //
 //
 public struct Series<T, I: DataFrameIndex> {
-    public typealias SeriesSlice = Slice<Series<T, I>>
     fileprivate var data: [T]
     fileprivate let indexMap: IndexMap<I>
     
@@ -27,7 +26,7 @@ extension Series where I == Int {
 extension Series: MutableCollection {
     public typealias Index = I
     public typealias Iterator = AnyIterator<T>
-    public typealias SubSequence = SeriesSlice
+    public typealias SubSequence = SeriesSlice<T, I>
     public func makeIterator() -> Iterator {
         var iterator = data.makeIterator()
         return AnyIterator {
@@ -56,7 +55,7 @@ extension Series: MutableCollection {
     
     public subscript(bounds: Range<I>) -> SubSequence {
         get {
-            return SubSequence(base: self, bounds: bounds)
+            return SeriesSlice(base: self, bounds: bounds)
         }
         set(newValue) {
             let range = indexMap.offsetRange(forIndexRange: bounds)

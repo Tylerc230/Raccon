@@ -56,7 +56,7 @@ class SeriesSpec: QuickSpec {
             
             it("can be modified via range") {
                 var series = Series([1, 2, 3, 4, 5])
-                series[1..<3] = Series.SeriesSlice(base: Series([20, 30]), bounds: 0..<2)
+                series[1..<3] = SeriesSlice([20, 30])
                 expect(series[1]) == 20
                 expect(series[2]) == 30
             }
