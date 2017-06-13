@@ -44,6 +44,32 @@ class SeriesSpec: QuickSpec {
                 expect(series[2]) == 6
             }
         }
+        
+        describe("range subscription") {
+            it("can be accessed via range") {
+                let series = Series([1, 2, 3, 4, 5])
+                let slice = series[1..<3]
+                expect(slice.count) == 2
+                expect(slice[1]) == 2
+                expect(slice[2]) == 3
+            }
+            
+            it("can be modified via range") {
+                var series = Series([1, 2, 3, 4, 5])
+                series[1..<3] = Series.SeriesSlice(base: Series([20, 30]), bounds: 0..<2)
+                expect(series[1]) == 20
+                expect(series[2]) == 30
+            }
+            
+            it("can me accessed via string range") {
+                let series = Series([1, 2, 3, 4, 5], index: ["a", "b", "c", "d", "e"])
+                let slice = series["b"..<"d"]
+                expect(slice.count) == 2
+                expect(slice["b"]) == 2
+                expect(slice["c"]) == 3
+                
+            }
+        }
     }
     
 }
