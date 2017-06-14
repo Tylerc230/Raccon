@@ -5,22 +5,26 @@
 //  Created by Tyler Casselman on 6/12/17.
 //
 //
-struct IndexMap<I: DataFrameIndex> {
-    typealias IndexMap = [I: Int]
-    typealias ReverseIndexMap = [Int: I]
-    fileprivate let indexMap: IndexMap
-    fileprivate let reverseIndexMap: ReverseIndexMap
+struct IndexSet<I: DataFrameIndex> {
+    fileprivate let indicies: [I]
+    private let indexMap: [I: Int]
+    private let reverseIndexMap: [Int: I]
+    public let startIndex: Int
+    public let endIndex: Int
     init(fromIndex index: [I]) {
+        self.indicies = index
+        startIndex = index.startIndex
+        endIndex = index.endIndex
         indexMap = index
             .enumerated()
-            .reduce(IndexMap()) { (result, next) in
+            .reduce([:]) { (result, next) in
                 let (offset, element) = next
                 var result = result
                 result[element] = offset
                 return result
         }
         
-        reverseIndexMap = indexMap.reduce(ReverseIndexMap()) { (result, next)  in
+        reverseIndexMap = indexMap.reduce([:]) { (result, next)  in
             let (key, value) = next
             var result = result
             result[value] = key
@@ -52,5 +56,26 @@ struct IndexMap<I: DataFrameIndex> {
         let lower = index(forOffset: offsetRange.lowerBound)
         let upper = index(forOffset: offsetRange.upperBound)
         return lower..<upper
+    }
+    
+    func intersecting(_ other: IndexSet) -> IndexSet {
+        let indices = Set(indicies)
+        let otherIndicies = Set(other.indicies)
+        let intersect = indices.intersection(otherIndicies)
+        return IndexSet(fromIndex: Array(intersect))
+    }
+    
+    func getIndex(after: Int) -> Int {
+        return indicies.index(after: after)
+    }
+}
+
+extension IndexSet: Collection {
+    public subscript (offset: Int) -> I {
+        return indicies[offset]
+    }
+    
+    public func index(after: Int) -> Int {
+        return getIndex(after: after)
     }
 }

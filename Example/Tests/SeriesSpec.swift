@@ -70,6 +70,17 @@ class SeriesSpec: QuickSpec {
                 
             }
         }
+        
+        describe("vector operators") {
+            it("adds all components of 2 series") {
+                let series1 = Series([1, 2, 3])
+                let series2 = Series([4, 5, 6])
+                let sum = series1 + series2
+                expect(sum[0]) == 5
+                expect(sum[1]) == 7
+                expect(sum[2]) == 9
+            }
+        }
     }
     
 }

@@ -6,7 +6,7 @@
 //
 //
 
-public protocol DataFrameIndex: Equatable, Hashable, Comparable {
+public protocol DataFrameIndex:  Hashable, Comparable {
     
 }
 

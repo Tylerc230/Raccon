@@ -6,13 +6,18 @@
 //
 //
 public struct Series<T, I: DataFrameIndex> {
-    fileprivate var data: [T]
-    fileprivate let indexMap: IndexMap<I>
+    private var data: [T]
+    internal let indexSet: IndexSet<I>
     
     
     public init(_ data: [T], index: [I]) {
-        self.indexMap = IndexMap(fromIndex: index)
+        self.indexSet = IndexSet(fromIndex: index)
         self.data = data
+    }
+    
+    internal init(_ data: [T], indexMap: IndexSet<I>) {
+        self.data = data
+        self.indexSet = indexMap
     }
 }
 
@@ -35,20 +40,20 @@ extension Series: MutableCollection {
     }
 
     public var startIndex: I {
-        return indexMap.index(forOffset: data.startIndex)
+        return indexSet.index(forOffset: data.startIndex)
     }
     
     public var endIndex: I {
-        return indexMap.index(forOffset: data.endIndex)
+        return indexSet.index(forOffset: data.endIndex)
     }
     
     public subscript (index: I) -> Iterator.Element {
         get {
-            let o = indexMap.offset(forIndex: index)
+            let o = indexSet.offset(forIndex: index)
             return data[o]
         }
         set (newElement){
-            let o = indexMap.offset(forIndex: index)
+            let o = indexSet.offset(forIndex: index)
             data[o] = newElement
         }
     }
@@ -58,14 +63,19 @@ extension Series: MutableCollection {
             return SeriesSlice(base: self, bounds: bounds)
         }
         set(newValue) {
-            let range = indexMap.offsetRange(forIndexRange: bounds)
+            let range = indexSet.offsetRange(forIndexRange: bounds)
             data[range] = ArraySlice(newValue.base.data)
         }
     }
 
     public func index(after i: I) -> I {
-        let offset = indexMap.offset(forIndex: i)
+        let offset = indexSet.offset(forIndex: i)
         let offsetAfter = data.index(after: offset)
-        return indexMap.index(forOffset: offsetAfter)
+        return indexSet.index(forOffset: offsetAfter)
+    }
+    
+    public func map<Transform>(_ transform: (T) throws -> Transform) rethrows -> Series<Transform, I> {
+        let values: [Transform] = try map(transform)
+        return Series<Transform, I>(values, indexMap: self.indexSet)
     }
 }
