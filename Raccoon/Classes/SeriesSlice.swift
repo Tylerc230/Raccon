@@ -6,9 +6,10 @@
 //
 //
 
-public struct SeriesSlice<T, I: DataFrameIndex>: Collection {
-    let base: Series<T, I>
+public struct SeriesSlice<T, I: DataFrameIndex>: MutableCollection {
+    var base: Series<T, I>
     let bounds: Range<I>
+    public typealias SubSequence = SeriesSlice<T, I>
     public init(base: Series<T, I>, bounds: Range<I>) {
         self.base = base
         self.bounds = bounds
@@ -22,7 +23,12 @@ public struct SeriesSlice<T, I: DataFrameIndex>: Collection {
     }
     
     public subscript(index: I) -> T {
-        return base[index]
+        get {
+            return base[index]
+        }
+        set (newValue) {
+            base[index] = newValue
+        }
     }
     
     public func index(after i: I) -> I {
