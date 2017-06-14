@@ -58,3 +58,15 @@ extension SeriesSlice where I == Int {
     }
 }
 
+extension SeriesSlice: CustomStringConvertible {
+    public var description: String {
+        let dataDesc = reduce("") { agg, next in
+            let nextText = agg.isEmpty ? "\(next)" : ", \(next)"
+            return agg + nextText
+        }
+        return "SeriesSlice(\(dataDesc))"
+    }
+}
+
+
+

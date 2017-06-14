@@ -55,6 +55,16 @@ extension Series where I == Int {
     }
 }
 
+extension Series: CustomStringConvertible {
+    public var description: String {
+        let dataDesc = reduce("") { agg, next in
+            let nextText = agg.isEmpty ? "\(next)" : ", \(next)"
+            return agg + nextText
+        }
+        return "Series(\(dataDesc))"
+    }
+}
+
 extension Series: MutableCollection {
     public struct SeriesOffset: Comparable {
         let value: Int
