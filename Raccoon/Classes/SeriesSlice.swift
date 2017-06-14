@@ -6,20 +6,13 @@
 //
 //
 
-public struct SeriesSlice<T, I: DataFrameIndex>: MutableCollection {
+public struct SeriesSlice<T, I: DataFrameIndex> {
     var base: Series<T, I>
-    let bounds: Range<I>
-    public typealias SubSequence = SeriesSlice<T, I>
-    public init(base: Series<T, I>, bounds: Range<I>) {
+    let bounds: Range<Index>
+    
+    public init(base: Series<T, I>, bounds: Range<Index>) {
         self.base = base
         self.bounds = bounds
-    }
-    public var startIndex: I {
-        return bounds.lowerBound
-    }
-    
-    public var endIndex: I {
-        return bounds.upperBound
     }
     
     public subscript(index: I) -> T {
@@ -30,15 +23,38 @@ public struct SeriesSlice<T, I: DataFrameIndex>: MutableCollection {
             base[index] = newValue
         }
     }
+}
+
+extension SeriesSlice: MutableCollection {
+    public typealias Index = Series<T, I>.SeriesOffset
+    public typealias SubSequence = SeriesSlice<T, I>
     
-    public func index(after i: I) -> I {
+    public var startIndex: Index {
+        return bounds.lowerBound
+    }
+    
+    public var endIndex: Index {
+        return bounds.upperBound
+    }
+    
+    public func index(after i: Index) -> Index {
         return base.index(after: i)
+    }
+    
+    public subscript(offset: Index) -> T {
+        get {
+            return base[offset]
+        }
+        set (newElement){
+            base[offset]  = newElement
+        }
     }
 }
 
 extension SeriesSlice where I == Int {
     public init(_ base: [T]) {
         self.base = Series(base)
-        self.bounds = base.startIndex..<base.endIndex
+        self.bounds = Index(base.startIndex)..<Index(base.endIndex)
     }
 }
+

@@ -19,33 +19,6 @@ public struct Series<T, I: DataFrameIndex> {
         self.data = data
         self.indexSet = indexMap
     }
-}
-
-extension Series where I == Int {
-    public init(_ data: [T])  {
-        self.init(data, index: Array(0..<data.count))
-    }
-}
-
-
-extension Series: MutableCollection {
-    public typealias Index = I
-    public typealias Iterator = AnyIterator<T>
-    public typealias SubSequence = SeriesSlice<T, I>
-    public func makeIterator() -> Iterator {
-        var iterator = data.makeIterator()
-        return AnyIterator {
-            return iterator.next()
-        }
-    }
-
-    public var startIndex: I {
-        return indexSet.index(forOffset: data.startIndex)
-    }
-    
-    public var endIndex: I {
-        return indexSet.index(forOffset: data.endIndex)
-    }
     
     public subscript (index: I) -> Iterator.Element {
         get {
@@ -60,6 +33,8 @@ extension Series: MutableCollection {
     
     public subscript(bounds: Range<I>) -> SubSequence {
         get {
+            let offsetBounds = indexSet.offsetRange(forIndexRange: bounds)
+            let bounds = SeriesOffset(offsetBounds.lowerBound)..<SeriesOffset(offsetBounds.upperBound)
             return SeriesSlice(base: self, bounds: bounds)
         }
         set(newValue) {
@@ -67,15 +42,75 @@ extension Series: MutableCollection {
             data[range] = ArraySlice(newValue.base.data)
         }
     }
-
-    public func index(after i: I) -> I {
-        let offset = indexSet.offset(forIndex: i)
-        let offsetAfter = data.index(after: offset)
-        return indexSet.index(forOffset: offsetAfter)
-    }
     
     public func map<Transform>(_ transform: (T) throws -> Transform) rethrows -> Series<Transform, I> {
         let values: [Transform] = try map(transform)
         return Series<Transform, I>(values, indexMap: self.indexSet)
+    }
+}
+
+extension Series where I == Int {
+    public init(_ data: [T])  {
+        self.init(data, index: Array(0..<data.count))
+    }
+}
+
+extension Series: MutableCollection {
+    public struct SeriesOffset: Comparable {
+        let value: Int
+        init(_ value: Int) {
+            self.value = value
+        }
+        
+        public static func ==(lhs: SeriesOffset, rhs: SeriesOffset) -> Bool {
+            return lhs.value == rhs.value
+        }
+        
+        public static func <(lhs: SeriesOffset, rhs: SeriesOffset) -> Bool {
+            return lhs.value < rhs.value
+        }
+    }
+    
+    public typealias Iterator = AnyIterator<T>
+    public typealias SubSequence = SeriesSlice<T, I>
+    public typealias Index = SeriesOffset
+    
+    public func makeIterator() -> Iterator {
+        var iterator = data.makeIterator()
+        return AnyIterator {
+            return iterator.next()
+        }
+    }
+
+    public var startIndex: Index {
+        return SeriesOffset(data.startIndex)
+    }
+    
+    public var endIndex: Index {
+        return SeriesOffset(data.endIndex)
+    }
+    
+    public subscript (offset: Index) -> Iterator.Element {
+        get {
+            return data[offset.value]
+        }
+        set (newElement) {
+            data[offset.value] = newElement
+        }
+    }
+    
+    public subscript (offsetBounds: Range<Index>) -> SubSequence {
+        get {
+            return SeriesSlice(base: self, bounds: offsetBounds)
+        }
+        
+        set(newSubsequence) {
+            let bounds = offsetBounds.lowerBound.value..<offsetBounds.upperBound.value
+            data[bounds] = ArraySlice(newSubsequence.base.data)
+        }
+    }
+    
+    public func index(after offset: Index) -> Index {
+        return Index(data.index(after: offset.value))
     }
 }
