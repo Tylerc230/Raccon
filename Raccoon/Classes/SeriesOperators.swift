@@ -17,3 +17,17 @@ extension Series where T: Numeric {
     }
 }
 
+extension Series where T: Equatable {
+    public static func ==(lhs: Series, rhs: Series) -> Bool {
+        guard lhs.count == rhs.count else {
+            return false
+        }
+        return zip(lhs, rhs).reduce(true) { agg, next in
+            guard agg else {
+                return false
+            }
+            return next.0 == next.1
+        }
+    }
+}
+

@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		2F4DAE621EE7D91200EE2881 /* SeriesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4DAE611EE7D91200EE2881 /* SeriesSpec.swift */; };
+		2FC57D6D1EF1AC0B00ED2CBE /* NimbleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC57D6C1EF1AC0B00ED2CBE /* NimbleExtensions.swift */; };
 		E7A818951B6990DC4A2A41AB /* Pods_Raccoon_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74A992052C9352DB24A211 /* Pods_Raccoon_Tests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		23AA6BE3770051CAE53B558E /* Pods-Raccoon_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Raccoon_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Raccoon_Tests/Pods-Raccoon_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		2F4DAE611EE7D91200EE2881 /* SeriesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeriesSpec.swift; sourceTree = "<group>"; };
+		2FC57D6C1EF1AC0B00ED2CBE /* NimbleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleExtensions.swift; sourceTree = "<group>"; };
 		442E44D24D22C5AE21CA5C6D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		5509413FDAD5AC738D1E4C97 /* Pods-Raccoon_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Raccoon_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Raccoon_Tests/Pods-Raccoon_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* Raccoon_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Raccoon_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACEA1AFB9204008FA782 /* Info.plist */,
+				2FC57D6C1EF1AC0B00ED2CBE /* NimbleExtensions.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FC57D6D1EF1AC0B00ED2CBE /* NimbleExtensions.swift in Sources */,
 				2F4DAE621EE7D91200EE2881 /* SeriesSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
