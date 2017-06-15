@@ -18,3 +18,13 @@ public func equal<T: Equatable, I>(_ expectedValue: Series<T, I>) -> MatcherFunc
         return expectedValue == actualValue
     }
 }
+
+public func haveSameKeysAndValues<T: Equatable, I>(_ expectedValue: Series<T, I>) -> MatcherFunc<Series<T, I>> {
+    return MatcherFunc { actualExpression, failureMessage in
+        failureMessage.postfixMessage = "have same keys and values as \(expectedValue)"
+        guard let actualValue = try actualExpression.evaluate() else {
+            return false
+        }
+        return actualValue.hasSameKeysAndValues(as: expectedValue)
+    }
+}

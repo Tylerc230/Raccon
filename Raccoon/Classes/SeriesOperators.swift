@@ -34,5 +34,18 @@ extension Series where Value: Equatable {
             return next.0 == next.1
         }
     }
+    
+    public func hasSameKeysAndValues(as other: Series) -> Bool {
+        guard count == other.count else {
+            return false
+        }
+        return labelMap.reduce(true) { (agg, label)  in
+            guard agg else {
+                return false
+            }
+            return self[label] == other[label]
+        }
+        
+    }
 }
 

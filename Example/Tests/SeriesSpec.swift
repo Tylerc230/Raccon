@@ -78,10 +78,7 @@ class SeriesSpec: QuickSpec {
             it("adds all components of 2 series") {
                 let sum = series1 + series2
                 let expected = Series([5, 7, 9])
-                expect(sum.count) == expected.count
-                expect(sum[0]) == expected[0]
-                expect(sum[1]) == expected[1]
-                expect(sum[2]) == expected[2]
+                expect(sum).to(haveSameKeysAndValues(expected))
             }
 
             it("subtracts all components of 2 series") {
