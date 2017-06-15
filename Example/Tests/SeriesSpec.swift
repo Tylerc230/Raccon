@@ -89,7 +89,9 @@ class SeriesSpec: QuickSpec {
             }
 
             it("subtracts all components of 2 series") {
-
+                let diff = series2 - series1
+                let expected = Series([3, 3, 3])
+                expect(diff).to(haveSameKeysAndValues(expected))
             }
         }
     }
