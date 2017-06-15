@@ -6,7 +6,7 @@
 //
 //
 
-public struct SeriesSlice<Value: Equatable, I: Indexer> {
+public struct SeriesSlice<Value, I: Indexer> {
     var base: Series<Value, I>
     let bounds: Range<Index>
     

@@ -5,15 +5,13 @@
 //  Created by Tyler Casselman on 6/6/17.
 //
 //
-public struct Series<Value: Equatable, I: Indexer> {
+public struct Series<Value, I: Indexer> {
     public typealias SeriesEntry = Entry
-    public struct Entry: Equatable {
+    public struct Entry {
         let indexer: I
         let value: Value
-        public static func ==(lhs: Entry, rhs: Entry) -> Bool {
-            return lhs.value == rhs.value && lhs.indexer == rhs.indexer
-        }
     }
+    
     private var data: [SeriesEntry]
     internal let indexSet: IndexSet<I>
     
@@ -66,7 +64,11 @@ public struct Series<Value: Equatable, I: Indexer> {
     }
 }
 
-
+extension Series.Entry where Value: Equatable {
+    public static func ==(lhs: Series.Entry, rhs: Series.Entry) -> Bool {
+        return lhs.value == rhs.value && lhs.indexer == rhs.indexer
+    }
+}
 
 extension Series where I == Int {
     public init(_ data: [Value]) {
@@ -85,6 +87,10 @@ extension Series: CustomStringConvertible {
 }
 
 extension Series: MutableCollection {
+    public typealias Iterator = AnyIterator<SeriesEntry>
+    public typealias SubSequence = SeriesSlice<Value, I>
+    public typealias Index = SeriesOffset
+    
     public struct SeriesOffset: Comparable {
         let value: Int
         init(_ value: Int) {
@@ -99,10 +105,6 @@ extension Series: MutableCollection {
             return lhs.value < rhs.value
         }
     }
-    
-    public typealias Iterator = AnyIterator<SeriesEntry>
-    public typealias SubSequence = SeriesSlice<Value, I>
-    public typealias Index = SeriesOffset
     
     public func makeIterator() -> Iterator {
         var iterator = data.makeIterator()
