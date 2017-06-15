@@ -6,9 +6,9 @@
 //
 //
 
-public protocol Indexer:  Hashable, Comparable {
+public protocol Label:  Hashable, Comparable {
     
 }
 
-extension Int: Indexer { }
-extension String: Indexer { }
+extension Int: Label { }
+extension String: Label { }

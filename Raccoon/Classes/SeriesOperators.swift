@@ -6,16 +6,10 @@
 //
 //
 
-//extension Series where Value: Numeric {
-//    public static func +(lhs: Series<Value, I>, rhs: Series<Value, I>) -> Series<Value, I> {
-//        let commonIndicies = lhs.indexSet.intersecting(rhs.indexSet)
-//        let values = commonIndicies.map { index in
-//            return (lhs[index], rhs[index])
-//        }
-//        .map { $0.0 + $0.1 }
-//        return Series(values, indexMap: commonIndicies)
+extension Series where Value: Numeric {
+//    public static func +(lhs: Series<Value, L>, rhs: Series<Value, L>) -> Series<Value, L> {
 //    }
-//}
+}
 
 extension Series where Value: Equatable {
     public static func ==(lhs: Series, rhs: Series) -> Bool {

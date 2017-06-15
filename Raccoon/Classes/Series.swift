@@ -5,56 +5,56 @@
 //  Created by Tyler Casselman on 6/6/17.
 //
 //
-public struct Series<Value, I: Indexer> {
+public struct Series<Value, L: Label> {
     public typealias SeriesEntry = Entry
     public struct Entry {
-        let indexer: I
+        let indexer: L
         let value: Value
     }
     
     private var data: [SeriesEntry]
-    internal let indexSet: IndexSet<I>
+    internal let indexSet: LabelMap<L>
     
     
-    public init(_ data: [Value], index: [I]) throws {
-        self.indexSet = IndexSet(fromIndex: index)
+    public init(_ data: [Value], index: [L]) throws {
+        self.indexSet = LabelMap(withLabels: index)
         self.data = try Series.createEntries(data: data, index: index)
     }
     
-    internal init(_ data: [SeriesEntry], indexMap: IndexSet<I>) {
+    internal init(_ data: [SeriesEntry], indexMap: LabelMap<L>) {
         self.data = data
         self.indexSet = indexMap
     }
     
-    public subscript (index: I) -> Value {
+    public subscript (index: L) -> Value {
         get {
-            let o = indexSet.offset(forIndex: index)
+            let o = indexSet.index(forLabel: index)
             return data[o].value
         }
         set (newElement){
-            let o = indexSet.offset(forIndex: index)
+            let o = indexSet.index(forLabel: index)
             data[o] = SeriesEntry(indexer: index, value: newElement)
         }
     }
     
-    public subscript(bounds: Range<I>) -> SubSequence {
+    public subscript(bounds: Range<L>) -> SubSequence {
         get {
-            let offsetBounds = indexSet.offsetRange(forIndexRange: bounds)
+            let offsetBounds = indexSet.indexRange(forLabelRange: bounds)
             let bounds = SeriesOffset(offsetBounds.lowerBound)..<SeriesOffset(offsetBounds.upperBound)
             return SeriesSlice(base: self, bounds: bounds)
         }
         set(newValue) {
-            let range = indexSet.offsetRange(forIndexRange: bounds)
+            let range = indexSet.indexRange(forLabelRange: bounds)
             data[range] = ArraySlice(newValue.base.data)
         }
     }
     
-    public func map<Transform>(_ transform: (SeriesEntry) throws -> Series<Transform, I>.Entry) rethrows -> Series<Transform, I> {
-        let values: [Series<Transform, I>.Entry] = try map(transform)
-        return Series<Transform, I>(values, indexMap: self.indexSet)
+    public func map<Transform>(_ transform: (SeriesEntry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
+        let values: [Series<Transform, L>.Entry] = try map(transform)
+        return Series<Transform, L>(values, indexMap: self.indexSet)
     }
     
-    private static func createEntries(data: [Value], index: [I]) throws -> [SeriesEntry] {
+    private static func createEntries(data: [Value], index: [L]) throws -> [SeriesEntry] {
         guard data.count == index.count else {
             throw Err("data and index must have the same length")
         }
@@ -70,7 +70,7 @@ extension Series.Entry where Value: Equatable {
     }
 }
 
-extension Series where I == Int {
+extension Series where L == Int {
     public init(_ data: [Value]) {
         try! self.init(data, index: Array(0..<data.count))
     }
@@ -88,7 +88,7 @@ extension Series: CustomStringConvertible {
 
 extension Series: MutableCollection {
     public typealias Iterator = AnyIterator<SeriesEntry>
-    public typealias SubSequence = SeriesSlice<Value, I>
+    public typealias SubSequence = SeriesSlice<Value, L>
     public typealias Index = SeriesOffset
     
     public struct SeriesOffset: Comparable {
