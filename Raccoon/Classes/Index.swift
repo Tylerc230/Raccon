@@ -6,9 +6,9 @@
 //
 //
 
-public protocol DataFrameIndex:  Hashable, Comparable {
+public protocol Indexer:  Hashable, Comparable {
     
 }
 
-extension Int: DataFrameIndex { }
-extension String: DataFrameIndex { }
+extension Int: Indexer { }
+extension String: Indexer { }

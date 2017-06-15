@@ -6,18 +6,18 @@
 //
 //
 
-extension Series where T: Numeric {
-    public static func +(lhs: Series<T, I>, rhs: Series<T, I>) -> Series<T, I> {
-        let commonIndicies = lhs.indexSet.intersecting(rhs.indexSet)
-        let values = commonIndicies.map { index in
-            return (lhs[index], rhs[index])
-        }
-        .map { $0.0 + $0.1 }
-        return Series(values, indexMap: commonIndicies)
-    }
-}
+//extension Series where Value: Numeric {
+//    public static func +(lhs: Series<Value, I>, rhs: Series<Value, I>) -> Series<Value, I> {
+//        let commonIndicies = lhs.indexSet.intersecting(rhs.indexSet)
+//        let values = commonIndicies.map { index in
+//            return (lhs[index], rhs[index])
+//        }
+//        .map { $0.0 + $0.1 }
+//        return Series(values, indexMap: commonIndicies)
+//    }
+//}
 
-extension Series where T: Equatable {
+extension Series where Value: Equatable {
     public static func ==(lhs: Series, rhs: Series) -> Bool {
         guard lhs.count == rhs.count else {
             return false

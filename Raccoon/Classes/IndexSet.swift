@@ -5,7 +5,7 @@
 //  Created by Tyler Casselman on 6/12/17.
 //
 //
-struct IndexSet<I: DataFrameIndex> {
+struct IndexSet<I: Indexer> {
     fileprivate let indicies: [I]
     private let indexMap: [I: Int]
     private let reverseIndexMap: [Int: I]
