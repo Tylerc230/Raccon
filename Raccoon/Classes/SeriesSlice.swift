@@ -15,7 +15,7 @@ public struct SeriesSlice<Value, I: Label> {
         self.bounds = bounds
     }
     
-    public subscript(index: I) -> Value {
+    public subscript(index: I) -> Value? {
         get {
             return base[index]
         }

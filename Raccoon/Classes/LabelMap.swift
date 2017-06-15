@@ -21,23 +21,30 @@ struct LabelMap<L: Label> {
                 var result = result
                 result[element] = offset
                 return result
-        }        
-    }
-    
-    func index(forLabel label: L) -> Int {
-        guard let offset = labelIndexMap[label] else {
-            fatalError("Invalid index")
         }
-        return offset
     }
     
-    func indexRange(forLabelRange labelRange: Range<L>) -> Range<Int> {
-        let lower = index(forLabel: labelRange.lowerBound)
-        let upper = index(forLabel: labelRange.upperBound)
+    func index(forLabel label: L) -> Int? {
+         return labelIndexMap[label]
+    }
+    
+    func indexRange(forLabelRange labelRange: Range<L>) -> Range<Int>? {
+        guard
+        let lower = index(forLabel: labelRange.lowerBound),
+        let upper = index(forLabel: labelRange.upperBound) else {
+            return nil
+        }
         return lower..<upper
     }
     
-    func getIndex(after: Int) -> Int {
+    func union(_ other: LabelMap<L>) -> LabelMap<L> {
+        let labelSet = Set(labels)
+        let otherLabelSet = Set(other.labels)
+        let unionLabelSet = labelSet.union(otherLabelSet)
+        return LabelMap(withLabels: Array(unionLabelSet))
+    }
+    
+    private func getIndex(after: Int) -> Int {
         return labels.index(after: after)
     }
 }

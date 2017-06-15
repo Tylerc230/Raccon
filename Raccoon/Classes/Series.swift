@@ -7,58 +7,73 @@
 //
 public struct Series<Value, L: Label> {
     public typealias SeriesEntry = Entry
-    public struct Entry {
+    public struct Entry: CustomStringConvertible {
         let indexer: L
-        let value: Value
+        let value: Value?
+        public var description: String {
+            let valueString = value.map { "\($0)" } ?? "Nan"
+            return "<\(indexer): \(valueString)>"
+        }
     }
     
     private var data: [SeriesEntry]
     internal let labelMap: LabelMap<L>
     
     
-    public init(_ data: [Value], index: [L]) throws {
-        self.labelMap = LabelMap(withLabels: index)
-        self.data = try Series.createEntries(data: data, index: index)
+    public init(_ data: [Value], labels: [L]) throws {
+        self.labelMap = LabelMap(withLabels: labels)
+        self.data = try Series.createEntries(data: data, labels: labels)
     }
     
-    internal init(_ data: [SeriesEntry], indexMap: LabelMap<L>) {
+    internal init(_ data: [SeriesEntry], labelMap: LabelMap<L>) {
         self.data = data
-        self.labelMap = indexMap
+        self.labelMap = labelMap
     }
     
-    public subscript (index: L) -> Value {
+    public subscript (label: L) -> Value? {
         get {
-            let o = labelMap.index(forLabel: index)
+            guard let o = labelMap.index(forLabel: label) else {
+                return nil
+            }
             return data[o].value
         }
         set (newElement){
-            let o = labelMap.index(forLabel: index)
-            data[o] = SeriesEntry(indexer: index, value: newElement)
+            if let o = labelMap.index(forLabel: label) {
+                data[o] = SeriesEntry(indexer: label, value: newElement!)
+            }
+            
         }
     }
     
-    public subscript(bounds: Range<L>) -> SubSequence {
+    public subscript(bounds: Range<L>) -> SubSequence? {
         get {
-            let offsetBounds = labelMap.indexRange(forLabelRange: bounds)
+            guard let offsetBounds = labelMap.indexRange(forLabelRange: bounds) else {
+                return nil
+            }
             let bounds = SeriesOffset(offsetBounds.lowerBound)..<SeriesOffset(offsetBounds.upperBound)
             return SeriesSlice(base: self, bounds: bounds)
         }
         set(newValue) {
-            let range = labelMap.indexRange(forLabelRange: bounds)
+            guard
+                let range = labelMap.indexRange(forLabelRange: bounds),
+                let newValue = newValue
+                else {
+                    return
+            }
             data[range] = ArraySlice(newValue.base.data)
         }
     }
     
     public func map<Transform>(_ transform: (SeriesEntry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
         let values: [Series<Transform, L>.Entry] = try map(transform)
-        return Series<Transform, L>(values, indexMap: self.labelMap)
+        return Series<Transform, L>(values, labelMap: self.labelMap)
     }
     
-    private static func createEntries(data: [Value], index: [L]) throws -> [SeriesEntry] {
-        guard data.count == index.count else {
+    private static func createEntries(data: [Value], labels: [L]) throws -> [SeriesEntry] {
+        guard data.count == labels.count else {
             throw Err("data and index must have the same length")
         }
-        return zip(index, data).map {
+        return zip(labels, data).map {
             return Entry(indexer: $0.0, value: $0.1)
         }
     }
@@ -72,7 +87,7 @@ extension Series.Entry where Value: Equatable {
 
 extension Series where L == Int {
     public init(_ data: [Value]) {
-        try! self.init(data, index: Array(0..<data.count))
+        try! self.init(data, labels: Array(0..<data.count))
     }
 }
 

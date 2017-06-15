@@ -33,7 +33,7 @@ class SeriesSpec: QuickSpec {
         
         describe("series indices") {
             it("can have strings as indices") {
-                let series = try! Series([1, 2, 3], index: ["first", "second", "third"])
+                let series = try! Series([1, 2, 3], labels: ["first", "second", "third"])
                 expect(series["first"]) == 1
                 expect(series["third"]) == 3
             }
@@ -48,7 +48,7 @@ class SeriesSpec: QuickSpec {
         describe("range subscription") {
             it("can be accessed via range") {
                 let series = Series([1, 2, 3, 4, 5])
-                let slice = series[1..<3]
+                let slice = series[1..<3]!
                 expect(slice.count) == 2
                 expect(slice[1]) == 2
                 expect(slice[2]) == 3
@@ -62,8 +62,8 @@ class SeriesSpec: QuickSpec {
             }
             
             it("can me accessed via string range") {
-                let series = try! Series([1, 2, 3, 4, 5], index: ["a", "b", "c", "d", "e"])
-                let slice = series["b"..<"d"]
+                let series = try! Series([1, 2, 3, 4, 5], labels: ["a", "b", "c", "d", "e"])
+                let slice = series["b"..<"d"]!
                 expect(slice.count) == 2
                 expect(slice["b"]) == 2
                 expect(slice["c"]) == 3
@@ -71,20 +71,23 @@ class SeriesSpec: QuickSpec {
             }
         }
         
-//        describe("vector operators") {
-//            let series1 = Series([1, 2, 3])
-//            let series2 = Series([4, 5, 6])
-//
-//            it("adds all components of 2 series") {
-//                let sum = series1 + series2
-//                let expected = Series([5, 7, 9])
-//                expect(sum).to(equal(expected))
-//            }
-//
-//            it("subtracts all components of 2 series") {
-//
-//            }
-//        }
+        describe("vector operators") {
+            let series1 = Series([1, 2, 3])
+            let series2 = Series([4, 5, 6])
+
+            it("adds all components of 2 series") {
+                let sum = series1 + series2
+                let expected = Series([5, 7, 9])
+                expect(sum.count) == expected.count
+                expect(sum[0]) == expected[0]
+                expect(sum[1]) == expected[1]
+                expect(sum[2]) == expected[2]
+            }
+
+            it("subtracts all components of 2 series") {
+
+            }
+        }
     }
     
 }
