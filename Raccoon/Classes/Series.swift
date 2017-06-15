@@ -13,45 +13,45 @@ public struct Series<Value, L: Label> {
     }
     
     private var data: [SeriesEntry]
-    internal let indexSet: LabelMap<L>
+    internal let labelMap: LabelMap<L>
     
     
     public init(_ data: [Value], index: [L]) throws {
-        self.indexSet = LabelMap(withLabels: index)
+        self.labelMap = LabelMap(withLabels: index)
         self.data = try Series.createEntries(data: data, index: index)
     }
     
     internal init(_ data: [SeriesEntry], indexMap: LabelMap<L>) {
         self.data = data
-        self.indexSet = indexMap
+        self.labelMap = indexMap
     }
     
     public subscript (index: L) -> Value {
         get {
-            let o = indexSet.index(forLabel: index)
+            let o = labelMap.index(forLabel: index)
             return data[o].value
         }
         set (newElement){
-            let o = indexSet.index(forLabel: index)
+            let o = labelMap.index(forLabel: index)
             data[o] = SeriesEntry(indexer: index, value: newElement)
         }
     }
     
     public subscript(bounds: Range<L>) -> SubSequence {
         get {
-            let offsetBounds = indexSet.indexRange(forLabelRange: bounds)
+            let offsetBounds = labelMap.indexRange(forLabelRange: bounds)
             let bounds = SeriesOffset(offsetBounds.lowerBound)..<SeriesOffset(offsetBounds.upperBound)
             return SeriesSlice(base: self, bounds: bounds)
         }
         set(newValue) {
-            let range = indexSet.indexRange(forLabelRange: bounds)
+            let range = labelMap.indexRange(forLabelRange: bounds)
             data[range] = ArraySlice(newValue.base.data)
         }
     }
     
     public func map<Transform>(_ transform: (SeriesEntry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
         let values: [Series<Transform, L>.Entry] = try map(transform)
-        return Series<Transform, L>(values, indexMap: self.indexSet)
+        return Series<Transform, L>(values, indexMap: self.labelMap)
     }
     
     private static func createEntries(data: [Value], index: [L]) throws -> [SeriesEntry] {
