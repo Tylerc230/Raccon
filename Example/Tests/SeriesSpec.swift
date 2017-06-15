@@ -74,10 +74,17 @@ class SeriesSpec: QuickSpec {
         describe("vector operators") {
             let series1 = Series([1, 2, 3])
             let series2 = Series([4, 5, 6])
+            let series3 = try! Series<Int, Int>([7, 8], labels: [1, 2])
 
             it("adds all components of 2 series") {
                 let sum = series1 + series2
                 let expected = Series([5, 7, 9])
+                expect(sum).to(haveSameKeysAndValues(expected))
+            }
+            
+            it("sets values for labels that exist in one series but not the other to nil") {
+                let sum = series1 + series3
+                let expected = Series([nil, 9, 11])
                 expect(sum).to(haveSameKeysAndValues(expected))
             }
 

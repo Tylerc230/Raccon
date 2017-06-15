@@ -20,7 +20,7 @@ public struct Series<Value, L: Label> {
     internal let labelMap: LabelMap<L>
     
     
-    public init(_ data: [Value], labels: [L]) throws {
+    public init(_ data: [Value?], labels: [L]) throws {
         self.labelMap = LabelMap(withLabels: labels)
         self.data = try Series.createEntries(data: data, labels: labels)
     }
@@ -69,7 +69,7 @@ public struct Series<Value, L: Label> {
         return Series<Transform, L>(values, labelMap: self.labelMap)
     }
     
-    private static func createEntries(data: [Value], labels: [L]) throws -> [SeriesEntry] {
+    private static func createEntries(data: [Value?], labels: [L]) throws -> [SeriesEntry] {
         guard data.count == labels.count else {
             throw Err("data and index must have the same length")
         }
@@ -86,7 +86,7 @@ extension Series.Entry where Value: Equatable {
 }
 
 extension Series where L == Int {
-    public init(_ data: [Value]) {
+    public init(_ data: [Value?]) {
         try! self.init(data, labels: Array(0..<data.count))
     }
 }
