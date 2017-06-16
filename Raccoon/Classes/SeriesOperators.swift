@@ -15,6 +15,10 @@ extension Series where Value: Numeric {
         return apply(f: -, lhs: lhs, rhs: rhs)
     }
     
+    public static func *(lhs: Series, rhs: Series) -> Series {
+        return apply(f: *, lhs: lhs, rhs: rhs)
+    }
+    
     public static func apply(f: (Value, Value) -> Value, lhs: Series<Value, L>, rhs: Series<Value, L>) -> Series<Value, L> {
         let labelMap = lhs.labelMap.union(rhs.labelMap)
         let sums = labelMap.map { label -> SeriesEntry in

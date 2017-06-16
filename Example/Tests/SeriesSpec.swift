@@ -93,6 +93,12 @@ class SeriesSpec: QuickSpec {
                 let expected = Series([3, 3, 3])
                 expect(diff).to(haveSameKeysAndValues(expected))
             }
+            
+            it("multiply all components of 2 series") {
+                let product = series2 * series1
+                let expected = Series([4, 10, 18])
+                expect(product).to(haveSameKeysAndValues(expected))
+            }
         }
     }
     
