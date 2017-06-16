@@ -15,17 +15,19 @@ public struct Series<Value, L: Label> {
             return "<\(indexer): \(valueString)>"
         }
     }
-    
+    public let name: String?
     private var data: [SeriesEntry]
     internal let labelMap: LabelMap<L>
     
     
-    public init(_ data: [Value?], labels: [L]) throws {
-        self.labelMap = LabelMap(withLabels: labels)
-        self.data = try Series.createEntries(data: data, labels: labels)
+    public init(_ data: [Value?], labels: [L], name: String? = nil) throws {
+        let labelMap = LabelMap(withLabels: labels)
+        let data = try Series.createEntries(data: data, labels: labels)
+        self.init(data, labelMap: labelMap, name: name)
     }
     
-    internal init(_ data: [SeriesEntry], labelMap: LabelMap<L>) {
+    internal init(_ data: [SeriesEntry], labelMap: LabelMap<L>, name: String?) {
+        self.name = name
         self.data = data
         self.labelMap = labelMap
     }
@@ -66,7 +68,7 @@ public struct Series<Value, L: Label> {
     
     public func map<Transform>(_ transform: (SeriesEntry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
         let values: [Series<Transform, L>.Entry] = try map(transform)
-        return Series<Transform, L>(values, labelMap: self.labelMap)
+        return Series<Transform, L>(values, labelMap: self.labelMap, name: self.name)
     }
     
     private static func createEntries(data: [Value?], labels: [L]) throws -> [SeriesEntry] {
