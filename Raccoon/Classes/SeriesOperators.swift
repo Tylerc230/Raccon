@@ -21,14 +21,14 @@ extension Series where Value: Numeric {
     
     public static func apply(f: (Value, Value) -> Value, lhs: Series<Value, L>, rhs: Series<Value, L>) -> Series<Value, L> {
         let labelMap = lhs.labelMap.union(rhs.labelMap)
-        let sums = labelMap.map { label -> SeriesEntry in
+        let sums = labelMap.map { label -> Entry in
             guard
                 let lValue = lhs[label],
                 let rValue = rhs[label]
                 else {
-                    return SeriesEntry(indexer: label, value: nil)
+                    return Entry(indexer: label, value: nil)
             }
-            return SeriesEntry(indexer: label, value: f(lValue, rValue))
+            return Entry(indexer: label, value: f(lValue, rValue))
         }
         return Series(sums, labelMap: labelMap, name: nil)
     }

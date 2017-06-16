@@ -7,7 +7,7 @@
 //
 struct LabelMap<L: Label> {
     fileprivate let labels: [L]
-    private let labelIndexMap: [L: Int]
+    private let labelIndexMap: [L: ValueOffset]
     public let startIndex: Int
     public let endIndex: Int
     init(withLabels labels: [L]) {
@@ -19,16 +19,16 @@ struct LabelMap<L: Label> {
             .reduce([:]) { (result, next) in
                 let (offset, element) = next
                 var result = result
-                result[element] = offset
+                result[element] = ValueOffset(offset)
                 return result
         }
     }
     
-    func index(forLabel label: L) -> Int? {
+    func index(forLabel label: L) -> ValueOffset? {
          return labelIndexMap[label]
     }
     
-    func indexRange(forLabelRange labelRange: Range<L>) -> Range<Int>? {
+    func indexRange(forLabelRange labelRange: Range<L>) -> Range<ValueOffset>? {
         guard
         let lower = index(forLabel: labelRange.lowerBound),
         let upper = index(forLabel: labelRange.upperBound) else {

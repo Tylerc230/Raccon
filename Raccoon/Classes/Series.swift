@@ -6,7 +6,6 @@
 //
 //
 public struct Series<Value, L: Label> {
-    public typealias SeriesEntry = Entry
     public struct Entry: CustomStringConvertible {
         let indexer: L
         let value: Value?
@@ -16,7 +15,7 @@ public struct Series<Value, L: Label> {
         }
     }
     public let name: String?
-    private var data: [SeriesEntry]
+    private var data: [Entry]
     internal let labelMap: LabelMap<L>
     
     
@@ -26,7 +25,7 @@ public struct Series<Value, L: Label> {
         self.init(data, labelMap: labelMap, name: name)
     }
     
-    internal init(_ data: [SeriesEntry], labelMap: LabelMap<L>, name: String?) {
+    internal init(_ data: [Entry], labelMap: LabelMap<L>, name: String?) {
         self.name = name
         self.data = data
         self.labelMap = labelMap
@@ -37,11 +36,11 @@ public struct Series<Value, L: Label> {
             guard let o = labelMap.index(forLabel: label) else {
                 return nil
             }
-            return data[o].value
+            return self[o].value
         }
         set (newElement){
             if let o = labelMap.index(forLabel: label) {
-                data[o] = SeriesEntry(indexer: label, value: newElement!)
+                self[o] = Entry(indexer: label, value: newElement!)
             }
             
         }
@@ -49,11 +48,10 @@ public struct Series<Value, L: Label> {
     
     public subscript(bounds: Range<L>) -> SubSequence? {
         get {
-            guard let offsetBounds = labelMap.indexRange(forLabelRange: bounds) else {
+            guard let dataRange = labelMap.indexRange(forLabelRange: bounds) else {
                 return nil
             }
-            let bounds = SeriesOffset(offsetBounds.lowerBound)..<SeriesOffset(offsetBounds.upperBound)
-            return SeriesSlice(base: self, bounds: bounds)
+            return SeriesSlice(base: self, bounds: dataRange)
         }
         set(newValue) {
             guard
@@ -62,16 +60,16 @@ public struct Series<Value, L: Label> {
                 else {
                     return
             }
-            data[range] = ArraySlice(newValue.base.data)
+            self[range] = newValue
         }
     }
     
-    public func map<Transform>(_ transform: (SeriesEntry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
+    public func map<Transform>(_ transform: (Entry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
         let values: [Series<Transform, L>.Entry] = try map(transform)
         return Series<Transform, L>(values, labelMap: self.labelMap, name: self.name)
     }
     
-    private static func createEntries(data: [Value?], labels: [L]) throws -> [SeriesEntry] {
+    private static func createEntries(data: [Value?], labels: [L]) throws -> [Entry] {
         guard data.count == labels.count else {
             throw Err("data and index must have the same length")
         }
@@ -104,24 +102,9 @@ extension Series: CustomStringConvertible {
 }
 
 extension Series: MutableCollection {
-    public typealias Iterator = AnyIterator<SeriesEntry>
+    public typealias Iterator = AnyIterator<Entry>
     public typealias SubSequence = SeriesSlice<Value, L>
-    public typealias Index = SeriesOffset
-    
-    public struct SeriesOffset: Comparable {
-        let value: Int
-        init(_ value: Int) {
-            self.value = value
-        }
-        
-        public static func ==(lhs: SeriesOffset, rhs: SeriesOffset) -> Bool {
-            return lhs.value == rhs.value
-        }
-        
-        public static func <(lhs: SeriesOffset, rhs: SeriesOffset) -> Bool {
-            return lhs.value < rhs.value
-        }
-    }
+    public typealias Index = ValueOffset
     
     public func makeIterator() -> Iterator {
         var iterator = data.makeIterator()
@@ -131,11 +114,11 @@ extension Series: MutableCollection {
     }
 
     public var startIndex: Index {
-        return SeriesOffset(data.startIndex)
+        return ValueOffset(data.startIndex)
     }
     
     public var endIndex: Index {
-        return SeriesOffset(data.endIndex)
+        return ValueOffset(data.endIndex)
     }
     
     public subscript (offset: Index) -> Iterator.Element {

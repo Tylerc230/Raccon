@@ -26,7 +26,7 @@ public struct SeriesSlice<Value, I: Label> {
 }
 
 extension SeriesSlice: MutableCollection {
-    public typealias Index = Series<Value, I>.SeriesOffset
+    public typealias Index = ValueOffset
     public typealias SubSequence = SeriesSlice<Value, I>
     
     public var startIndex: Index {

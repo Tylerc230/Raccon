@@ -6,7 +6,6 @@
 //
 //
 
-import Foundation
 struct DataFrame {
-    
+    init() {}
 }
