@@ -5,8 +5,9 @@
 //  Created by Tyler Casselman on 6/6/17.
 //
 //
+public typealias Name = String
 public typealias Label = Hashable & Comparable
-public struct Series<Value, L: Label> {
+public struct Series<Value: DataType, L: Label> {
     public struct Entry: CustomStringConvertible {
         let indexer: L
         let value: Value?
@@ -15,18 +16,18 @@ public struct Series<Value, L: Label> {
             return "<\(indexer): \(valueString)>"
         }
     }
-    public let name: String?
+    public let name: Name
     private var data: [Entry]
     internal let labelMap: LabelMap<L>
     
     
-    public init(_ data: [Value?], labels: [L], name: String? = nil) throws {
+    public init(_ data: [Value?], labels: [L], name: Name = "") throws {
         let labelMap = LabelMap(withLabels: labels)
         let data = try Series.createEntries(data: data, labels: labels)
         self.init(data, labelMap: labelMap, name: name)
     }
     
-    internal init(_ data: [Entry], labelMap: LabelMap<L>, name: String?) {
+    internal init(_ data: [Entry], labelMap: LabelMap<L>, name: Name) {
         self.name = name
         self.data = data
         self.labelMap = labelMap

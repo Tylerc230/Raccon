@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F0FE82C1EF49A3700CD9BF2 /* DataFrameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0FE82B1EF49A3700CD9BF2 /* DataFrameSpec.swift */; };
 		2F4DAE621EE7D91200EE2881 /* SeriesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4DAE611EE7D91200EE2881 /* SeriesSpec.swift */; };
 		2FC57D6D1EF1AC0B00ED2CBE /* NimbleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC57D6C1EF1AC0B00ED2CBE /* NimbleExtensions.swift */; };
 		E7A818951B6990DC4A2A41AB /* Pods_Raccoon_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB74A992052C9352DB24A211 /* Pods_Raccoon_Tests.framework */; };
@@ -14,6 +15,7 @@
 
 /* Begin PBXFileReference section */
 		23AA6BE3770051CAE53B558E /* Pods-Raccoon_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Raccoon_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Raccoon_Tests/Pods-Raccoon_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		2F0FE82B1EF49A3700CD9BF2 /* DataFrameSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFrameSpec.swift; sourceTree = "<group>"; };
 		2F4DAE611EE7D91200EE2881 /* SeriesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeriesSpec.swift; sourceTree = "<group>"; };
 		2FC57D6C1EF1AC0B00ED2CBE /* NimbleExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleExtensions.swift; sourceTree = "<group>"; };
 		442E44D24D22C5AE21CA5C6D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 			children = (
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 				2F4DAE611EE7D91200EE2881 /* SeriesSpec.swift */,
+				2F0FE82B1EF49A3700CD9BF2 /* DataFrameSpec.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 			files = (
 				2FC57D6D1EF1AC0B00ED2CBE /* NimbleExtensions.swift in Sources */,
 				2F4DAE621EE7D91200EE2881 /* SeriesSpec.swift in Sources */,
+				2F0FE82C1EF49A3700CD9BF2 /* DataFrameSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

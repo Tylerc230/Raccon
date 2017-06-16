@@ -30,7 +30,7 @@ extension Series where Value: Numeric {
             }
             return Entry(indexer: label, value: f(lValue, rValue))
         }
-        return Series(sums, labelMap: labelMap, name: nil)
+        return Series(sums, labelMap: labelMap, name: "")
     }
 }
 
