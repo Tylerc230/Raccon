@@ -6,6 +6,9 @@
 //
 //
 
-struct DataFrame {
+struct DataFrame<RowLabel, ColumnLabel> {
+    enum ColumnType {
+        case intColumn(Series<RowLabel, Int>), doubleColumn(Series<RowLabel, Double>)
+    }
     init() {}
 }

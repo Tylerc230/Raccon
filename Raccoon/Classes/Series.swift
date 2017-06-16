@@ -5,6 +5,7 @@
 //  Created by Tyler Casselman on 6/6/17.
 //
 //
+public typealias Label = Hashable & Comparable
 public struct Series<Value, L: Label> {
     public struct Entry: CustomStringConvertible {
         let indexer: L
