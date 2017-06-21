@@ -43,6 +43,12 @@ public struct DataFrame<RowLabel: Label, ColumnLabel: Label> {
     }
     let labelMap: LabelMap<ColumnLabel>
     let columns: [Column]
+    public init<D>(series: Series<D, RowLabel, ColumnLabel>, columnLabel: ColumnLabel) throws {
+        let namedSeries = series.rename(columnLabel)
+        let column = Column(series: namedSeries)
+        try self.init(columns: [column])
+    }
+    
     public init<D>(series: Series<D, RowLabel, ColumnLabel>) throws {
         let column = Column(series: series)
         try self.init(columns: [column])

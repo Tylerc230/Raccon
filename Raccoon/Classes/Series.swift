@@ -32,6 +32,10 @@ public struct Series<Value: DataType, L: Label, Name: Label> {
         self.labelMap = labelMap
     }
     
+    public func rename(_ name: Name?) -> Series {
+        return Series(data, labelMap: labelMap, name: name)
+    }
+    
     public subscript (label: L) -> Value? {
         get {
             guard let o = labelMap.index(forLabel: label) else {
