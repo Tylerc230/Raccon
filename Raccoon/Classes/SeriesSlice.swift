@@ -6,11 +6,12 @@
 //
 //
 
-public struct SeriesSlice<Value: DataType, I: Label> {
-    var base: Series<Value, I>
+public struct SeriesSlice<Value: DataType, I: Label, Name: Label> {
+    public typealias BaseType = Series<Value, I, Name>
+    var base: BaseType
     let bounds: Range<Index>
     
-    public init(base: Series<Value, I>, bounds: Range<Index>) {
+    public init(base: BaseType, bounds: Range<Index>) {
         self.base = base
         self.bounds = bounds
     }
@@ -27,7 +28,7 @@ public struct SeriesSlice<Value: DataType, I: Label> {
 
 extension SeriesSlice: MutableCollection {
     public typealias Index = ValueOffset
-    public typealias SubSequence = SeriesSlice<Value, I>
+    public typealias SubSequence = SeriesSlice<Value, I, Name>
     
     public var startIndex: Index {
         return bounds.lowerBound
@@ -41,7 +42,7 @@ extension SeriesSlice: MutableCollection {
         return base.index(after: i)
     }
     
-    public subscript(offset: Index) -> Series<Value, I>.Entry {
+    public subscript(offset: Index) -> BaseType.Entry {
         get {
             return base[offset]
         }
@@ -51,9 +52,9 @@ extension SeriesSlice: MutableCollection {
     }
 }
 
-extension SeriesSlice where I == Int {
-    public init(_ base: [Value]) {
-        self.base = Series(base)
+extension SeriesSlice where I == Int, Name == Int {
+    public init(_ base: [Value]) throws {
+        self.base = try Series(base)
         self.bounds = Index(base.startIndex)..<Index(base.endIndex)
     }
 }

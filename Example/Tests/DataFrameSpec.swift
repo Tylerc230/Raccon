@@ -13,11 +13,11 @@ class DataFrameSpec: QuickSpec {
     override func spec() {
         describe("data frame creation") {
             it("is creatable from a series") {
-                let series = Series([1, 2, 3])
-                let dataframe = DataFrame<Int>(series: series)
-                let column = dataframe[0]
+                let series = try! Series([1, 2, 3], name: 0)
+                let dataframe = try! DataFrame<Int, Int>(series: series)
+                let column = dataframe[0]!
                 if case let .intColumn(intSeries) = column {
-                    expect(intSeries[0]) == 1
+                    expect(intSeries).to(haveSameKeysAndValues(series))
                 }else {
                     fail("should return column of ints")
                 }

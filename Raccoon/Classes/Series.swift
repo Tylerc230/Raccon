@@ -5,9 +5,8 @@
 //  Created by Tyler Casselman on 6/6/17.
 //
 //
-public typealias Name = String
 public typealias Label = Hashable & Comparable
-public struct Series<Value: DataType, L: Label> {
+public struct Series<Value: DataType, L: Label, Name: Label> {
     public struct Entry: CustomStringConvertible {
         let indexer: L
         let value: Value?
@@ -16,18 +15,18 @@ public struct Series<Value: DataType, L: Label> {
             return "<\(indexer): \(valueString)>"
         }
     }
-    public let name: Name
+    public let name: Name?
     private var data: [Entry]
     internal let labelMap: LabelMap<L>
     
     
-    public init(_ data: [Value?], labels: [L], name: Name = "") throws {
+    public init(_ data: [Value?], labels: [L], name: Name?) throws {
         let labelMap = LabelMap(withLabels: labels)
         let data = try Series.createEntries(data: data, labels: labels)
         self.init(data, labelMap: labelMap, name: name)
     }
     
-    internal init(_ data: [Entry], labelMap: LabelMap<L>, name: Name) {
+    internal init(_ data: [Entry], labelMap: LabelMap<L>, name: Name?) {
         self.name = name
         self.data = data
         self.labelMap = labelMap
@@ -66,9 +65,9 @@ public struct Series<Value: DataType, L: Label> {
         }
     }
     
-    public func map<Transform>(_ transform: (Entry) throws -> Series<Transform, L>.Entry) rethrows -> Series<Transform, L> {
-        let values: [Series<Transform, L>.Entry] = try map(transform)
-        return Series<Transform, L>(values, labelMap: self.labelMap, name: self.name)
+    public func map<Transform>(_ transform: (Entry) throws -> Series<Transform, L, Name>.Entry) rethrows -> Series<Transform, L, Name> {
+        let values: [Series<Transform, L, Name>.Entry] = try map(transform)
+        return Series<Transform, L, Name>(values, labelMap: self.labelMap, name: self.name)
     }
     
     private static func createEntries(data: [Value?], labels: [L]) throws -> [Entry] {
@@ -88,8 +87,20 @@ extension Series.Entry where Value: Equatable {
 }
 
 extension Series where L == Int {
-    public init(_ data: [Value?]) {
-        try! self.init(data, labels: Array(0..<data.count))
+    public init(_ data: [Value?], name: Name?) throws {
+        try self.init(data, labels: Array(0..<data.count), name: name)
+    }
+}
+
+extension Series where Name == Int {
+    public init(_ data: [Value?], labels: [L]) throws {
+        try self.init(data, labels: labels, name: nil)
+    }
+}
+
+extension Series where Name == Int, L == Int {
+    public init(_ data: [Value?]) throws {
+        try self.init(data, labels: Array(0..<data.count), name: nil)
     }
 }
 
@@ -105,7 +116,7 @@ extension Series: CustomStringConvertible {
 
 extension Series: MutableCollection {
     public typealias Iterator = AnyIterator<Entry>
-    public typealias SubSequence = SeriesSlice<Value, L>
+    public typealias SubSequence = SeriesSlice<Value, L, Name>
     public typealias Index = ValueOffset
     
     public func makeIterator() -> Iterator {

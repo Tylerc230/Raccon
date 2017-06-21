@@ -19,7 +19,7 @@ extension Series where Value: Numeric {
         return apply(f: *, lhs: lhs, rhs: rhs)
     }
     
-    public static func apply(f: (Value, Value) -> Value, lhs: Series<Value, L>, rhs: Series<Value, L>) -> Series<Value, L> {
+    public static func apply(f: (Value, Value) -> Value, lhs: Series<Value, L, Name>, rhs: Series<Value, L, Name>) -> Series<Value, L, Name> {
         let labelMap = lhs.labelMap.union(rhs.labelMap)
         let sums = labelMap.map { label -> Entry in
             guard
@@ -30,7 +30,7 @@ extension Series where Value: Numeric {
             }
             return Entry(indexer: label, value: f(lValue, rValue))
         }
-        return Series(sums, labelMap: labelMap, name: "")
+        return Series(sums, labelMap: labelMap, name: lhs.name ?? rhs.name)
     }
 }
 

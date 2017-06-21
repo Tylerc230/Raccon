@@ -9,7 +9,7 @@ import Raccoon
 import Quick
 import Nimble
 
-public func equal<T: Equatable, I>(_ expectedValue: Series<T, I>) -> MatcherFunc<Series<T, I>> {
+public func equal<T: Equatable, I, Name>(_ expectedValue: Series<T, I, Name>) -> MatcherFunc<Series<T, I, Name>> {
     return MatcherFunc { actualExpression, failureMessage in
         failureMessage.postfixMessage = "equal \(expectedValue)"
         guard let actualValue = try actualExpression.evaluate() else {
@@ -19,7 +19,7 @@ public func equal<T: Equatable, I>(_ expectedValue: Series<T, I>) -> MatcherFunc
     }
 }
 
-public func haveSameKeysAndValues<T: Equatable, I>(_ expectedValue: Series<T, I>) -> MatcherFunc<Series<T, I>> {
+public func haveSameKeysAndValues<T: Equatable, I, Name>(_ expectedValue: Series<T, I, Name>) -> MatcherFunc<Series<T, I, Name>> {
     return MatcherFunc { actualExpression, failureMessage in
         failureMessage.postfixMessage = "have same keys and values as \(expectedValue)"
         guard let actualValue = try actualExpression.evaluate() else {
