@@ -12,7 +12,7 @@ public struct DataFrame<RowLabel: Label, ColumnLabel: Label> {
         case doubleColumn(Series<Double, RowLabel, ColumnLabel>)
         case stringColumn(Series<String, RowLabel, ColumnLabel>)
         
-        init<D>(series: Series<D, RowLabel, ColumnLabel>) {
+        public init<D>(series: Series<D, RowLabel, ColumnLabel>) {
             switch series {
             case let intSeries as Series<Int, RowLabel, ColumnLabel>:
                 self = .intColumn(intSeries)
@@ -54,17 +54,28 @@ public struct DataFrame<RowLabel: Label, ColumnLabel: Label> {
         try self.init(columns: [column])
     }
     
-    init(columns: [Column]) throws {
+    public init(columns: [Column]) throws {
         self.columns = columns
         let labels = try columns.map { try $0.name()}
         self.labelMap = LabelMap(withLabels: labels)
     }
     
-    public subscript(columnLabel: ColumnLabel) -> Column? {
+    private subscript(columnLabel: ColumnLabel) -> Column? {
         guard let offset = labelMap.index(forLabel: columnLabel) else {
             return nil
         }
         return self[offset]
+    }
+    
+    public subscript(columnLabel: ColumnLabel) -> Series<Int, RowLabel, ColumnLabel>? {
+        guard let column: Column = self[columnLabel] else {
+            return nil
+        }
+        guard case let .intColumn(series) = column else {
+            return nil
+        }
+        return series
+        
     }
 }
 
