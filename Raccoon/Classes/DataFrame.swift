@@ -66,12 +66,22 @@ public struct DataFrame<RowLabel: Label, ColumnLabel: Label> {
         }
         return self[offset]
     }
-    
+
     public subscript(columnLabel: ColumnLabel) -> Series<Int, RowLabel, ColumnLabel>? {
         guard let column: Column = self[columnLabel] else {
             return nil
         }
         guard case let .intColumn(series) = column else {
+            return nil
+        }
+        return series
+    }
+
+    public subscript(columnLabel: ColumnLabel) -> Series<Double, RowLabel, ColumnLabel>? {
+        guard let column: Column = self[columnLabel] else {
+            return nil
+        }
+        guard case let .doubleColumn(series) = column else {
             return nil
         }
         return series
