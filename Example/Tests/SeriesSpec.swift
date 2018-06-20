@@ -61,7 +61,7 @@ class SeriesSpec: QuickSpec {
                 expect(series[2]) == 30
             }
             
-            it("can me accessed via string range") {
+            it("can be accessed via string range") {
                 let series = try! Series([1, 2, 3, 4, 5], labels: ["a", "b", "c", "d", "e"])
                 let slice = series["b"..<"d"]!
                 expect(slice.count) == 2
